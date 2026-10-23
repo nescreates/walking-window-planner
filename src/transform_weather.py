@@ -4,7 +4,8 @@ connection = duckdb.connect()
 query = """
 SELECT 
       unnest(hourly.time) AS forecast_time, -- put each time on its own row 
-      unnest (hourly.temperature_2m) AS temperature_c -- put its temperature beside it 
+      unnest (hourly.temperature_2m) AS temperature_c, -- put its temperature beside it 
+      unnest(hourly.precipitation_probability) AS rain_probability_pct, -- put its rain probabaility besside it 
 FROM read_json_auto('data/raw/london_sample.json');
 """
 
