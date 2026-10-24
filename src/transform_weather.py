@@ -1,7 +1,20 @@
+from datetime import datetime  # Help Python understand dates and times
 import duckdb
 
-connection = duckdb.connect() 
-chosen_time = input("Enter a date and hour (YYYY-MM-DD HH:00:00): ")  # Ask which forecast to show
+chosen_time = input("Enter a date and hour (YYYY-MM-DD HH:00:00): ")
+
+try:  # Try to read the entered date and time
+    chosen_time = datetime.strptime(chosen_time, "%Y-%m-%d %H:%M:%S")
+except ValueError:  # If the entry is not a valid date in this format
+    print("Enter a valid date and time, for example: 2026-10-20 20:00:00")
+    raise SystemExit(1)  # Stop because the input needs correcting
+
+if chosen_time.minute != 0 or chosen_time.second != 0:  # Check it is an exact hour
+    print("Choose an exact hour, such as 20:00:00.")
+    raise SystemExit(1)  # Stop rather than silently change the user's time
+
+connection = duckdb.connect()  # Open the database after checking the input
+
 query = """
 WITH hourly_weather AS (
     -- First, arrange the saved weather into rows

@@ -57,3 +57,14 @@ Code: providing the Python examples for requesting, saving and inspecting weathe
 Understanding and debugging: explaining the code, reviewing screenshots and correcting misunderstanding
 
 AI also provided example SQL and Python code for the forecast lookup and missing-result handling. I ran manual checks using a time present in the sample and a date outside it.
+
+## Checks performed
+
+I manually checked these situations:
+
+- A time available in the sample returns its forecast.
+- A date outside the sample displays a “No forecast found” message.
+- An entry such as `hello` displays guidance on the expected date format.
+- A time such as `20:30:00` asks the user to choose an exact hour.
+
+These are manual checks; automated tests are not implemented yet.
