@@ -9,16 +9,15 @@ who want to incorprate for cardio or steps in their working day
 Assit them in choosing their perferrred weather prefernce to walk according the their work schedule 
 
 ## First Version Scope 
-The user would enter : weather preferences, location,avaiable start/end time and desried walking duration for version 1.
+The first version lets a user choose a date and hour to check the forecast temperature and chance of rain before a planned walk.
 
-Available time means time the user can actually spend walking; meals and other buffers are already accounted for.
+Currently, the script uses a saved London forecast sample covering 20 October 2026. It accepts an exact hour and displays the matching forecast, or a clear message if no matching forecast is available.
 
-The app would return ;suggest walking windows that fit the user’s availability, duration and weather preferences, with forecast conditions and an explanation. If none fit, explain why.
+It does not currently suggest walking times, calculate routes or track steps.
 
 ## What i would do next 
 Features that could be added later ; recommednds best routes to take based on their current location and step goals they want to acheive everyday or per week.
 
-## How it works
 ## How it works
 
 1. Collect the weather data
@@ -30,14 +29,19 @@ Features that could be added later ; recommednds best routes to take based on th
 3. Inspect the saved data
    A separate script checks how many entries each hourly list contains. In our sample, the times, temperatures and rain probabilities each contain 24 entries.
 
-4. Arrange the data into rows
-   DuckDB runs SQL that pairs each time with its temperature and rain probability, creating one row per forecast hour.
+5. Look up the chosen forecast
+   The user enters a date and hour. Python passes this choice to a SQL query, which finds the matching forecast.
 
-5. Apply example weather preferences
-   SQL keeps hours with a rain probability of 25% or less and a temperature between 12°C and 20°C, including the limits.
+6. Handle unavailable forecasts
+   If no matching row exists in the saved data, the script displays a message instead of an empty table.
 
 The current script identifies hours matching these example weather preferences. Availability and walking duration will be added next. Wind is outside the first version's scope.
+## Scope decision
 
+
+I simplified the first version to answer one question: “What weather should I expect at my chosen walking time?”
+
+Earlier experiments filtered weather conditions and availability to suggest walking times. The current version focuses on checking a time the user has already chosen.
 
 ## How to run it
 python -m pip install -r requirements.txt
@@ -51,3 +55,5 @@ Scope: defining the user, inputs, outputs and first-version boundaries.
 Setup: providing Git commands, virtual-environment instructions and .gitignore entries.
 Code: providing the Python examples for requesting, saving and inspecting weather data.
 Understanding and debugging: explaining the code, reviewing screenshots and correcting misunderstanding
+
+AI also provided example SQL and Python code for the forecast lookup and missing-result handling. I ran manual checks using a time present in the sample and a date outside it.
