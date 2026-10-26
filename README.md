@@ -66,5 +66,8 @@ I manually checked these situations:
 - A date outside the sample displays a “No forecast found” message.
 - An entry such as `hello` displays guidance on the expected date format.
 - A time such as `20:30:00` asks the user to choose an exact hour.
-
+- Added checks for matching list lengths, missing values, rain probabilities between 0 and 100, and repeated forecast times.
+- Manually tested the rain probability check by temporarily setting one value to 150 in memory. The script rejected it.
+- Removed the temporary change and confirmed all four checks passed on the saved sample.
 These are manual checks; automated tests are not implemented yet.
+
