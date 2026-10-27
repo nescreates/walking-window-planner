@@ -115,6 +115,7 @@ The scripts automatically check data and user inputs when run. I manually exerci
 - Temporarily setting a rain probability to 150 in memory triggers rejection. Removing the temporary change restores the passing result.
 - Temporarily renaming the Parquet file produces preparation instructions. The file was restored afterwards.
 - Repeating preparation still produces 24 rows, and the lookup returns the same example forecast.
+- Cloned the GitHub repository into a separate folder, created a new virtual environment, installed the requirements and successfully ran preparation and the example lookup without fetching new weather data. This was tested on the same Mac.
 
 A separate automated test suite is not implemented yet.
 
