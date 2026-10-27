@@ -1,9 +1,9 @@
 from datetime import datetime  # Help Python understand dates and times
-from inspect_weather import validate_weather  # Bring in our checking function
+
 import duckdb
 
-# Check the saved weather before using it for the forecast lookup
-validate_weather("data/raw/london_sample.json")
+
+
 chosen_time = input("Enter a date and hour (YYYY-MM-DD HH:00:00): ")
 
 try:  # Try to read the entered date and time
@@ -18,19 +18,15 @@ if chosen_time.minute != 0 or chosen_time.second != 0:  # Check it is an exact h
 
 connection = duckdb.connect()  # Open the database after checking the input
 
+# Read the prepared table and find the user's chosen hour
 query = """
-WITH hourly_weather AS (
-    -- First, arrange the saved weather into rows
-    SELECT
-        CAST(unnest(hourly.time) AS TIMESTAMP) AS forecast_time,
-        unnest(hourly.temperature_2m) AS temperature_c,
-        unnest(hourly.precipitation_probability) AS rain_probability_pct
-    FROM read_json_auto('data/raw/london_sample.json')
-)
-SELECT *
-FROM hourly_weather
-WHERE forecast_time = CAST(? AS TIMESTAMP) -- Use the time entered by the user
-ORDER BY forecast_time; -- Show every forecast hour in time order
+SELECT
+    forecast_time,
+    temperature_c,
+    rain_probability_pct
+FROM read_parquet('data/processed/hourly_weather.parquet')
+WHERE forecast_time = CAST(? AS TIMESTAMP)
+ORDER BY forecast_time;
 """
 result = connection.sql(query, params=[chosen_time])  # Look up the chosen time
 rows = result.fetchall()  # Bring the matching rows into Python

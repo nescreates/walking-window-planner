@@ -38,6 +38,10 @@ Features that could be added later ; recommednds best routes to take based on th
 The current script identifies hours matching these example weather preferences. Availability and walking duration will be added next. Wind is outside the first version's scope.
 
 - Before looking up a forecast, the script calls a reusable validation function. If a data check fails, execution stops before the SQL transformation.
+
+- The preparation script validates the original JSON, converts the hourly lists into rows, converts forecast times into timestamps, and saves a Parquet table.
+
+- The lookup script reads that prepared table and returns the forecast for the user's chosen date and hour.
 ## Scope decision
 
 
@@ -49,7 +53,9 @@ Earlier experiments filtered weather conditions and availability to suggest walk
 python -m pip install -r requirements.txt
 python src/fetch_weather.py
 python src/inspect_weather.py
-python src/transform_weather.py
+python src/prepare_weather.py
+python src/lookup_weather.py
+
 
 ## Where AI helped
 
