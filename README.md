@@ -1,57 +1,60 @@
-# Walking window planner 
+# Walking Window Planner
 
-## What i built and who for 
+## What I built and who for
 
-For working prfoessisonals working desk based or jobs 
+A command-line forecast lookup for desk-based workers who want to check the weather before a planned walk.
 
-who want to incorprate for cardio or steps in their working day
+The user enters a date and exact hour to see the forecast temperature and precipitation probability.
 
-Assit them in choosing their perferrred weather prefernce to walk according the their work schedule 
+The current version demonstrates a Python and SQL pipeline using a saved London forecast for 20 October 2026. It is not a live weather app.
 
-## First Version Scope 
-The first version lets a user choose a date and hour to check the forecast temperature and chance of rain before a planned walk.
+## The data
 
-Currently, the script uses a saved London forecast sample covering 20 October 2026. It accepts an exact hour and displays the matching forecast, or a clear message if no matching forecast is available.
+Source: [Open-Meteo Forecast API](https://open-meteo.com/en/docs).
 
-It does not currently suggest walking times, calculate routes or track steps.
+The included sample contains 24 hourly forecasts for London, with the API configured to use Europe/London time.
 
-## What i would do next 
-Features that could be added later ; recommednds best routes to take based on their current location and step goals they want to acheive everyday or per week.
+The lookup uses:
+
+- Forecast time.
+- Temperature in degrees Celsius.
+- Precipitation probability as a percentage.
+
+The original response also contains wind speed, which this version does not use.
+
+The original JSON is stored unchanged in `data/raw/london_sample.json`. Keeping a sample allows reviewers to reproduce the example without calling the API.
+
+Weather data is provided by [Open-Meteo](https://open-meteo.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). This project reshapes selected fields into a table; it does not create the forecasts.
 
 ## How it works
 
-1. Collect the weather data
-   A Python script requests an hourly forecast from Open-Meteo for London, including temperature and chance of rain.
+1. **Extract:** `src/fetch_weather.py` requests an hourly London forecast and saves the original JSON response.
 
-2. Save the original response
-   The script saves the response in data/raw/london_sample.json without changing its contents. This lets us work from the same sample without requesting the API again.
+2. **Validate:** `src/inspect_weather.py` provides a reusable function that checks matching list lengths, missing values, precipitation probabilities between 0 and 100, and repeated forecast times.
 
-3. Inspect the saved data
-   A separate script checks how many entries each hourly list contains. In our sample, the times, temperatures and rain probabilities each contain 24 entries.
+3. **Transform and save:** `src/prepare_weather.py` calls validation before using DuckDB SQL to turn the separate hourly lists into rows. It converts time strings into timestamps, gives the columns readable names and saves `data/processed/hourly_weather.parquet`.
 
-5. Look up the chosen forecast
-   The user enters a date and hour. Python passes this choice to a SQL query, which finds the matching forecast.
+4. **Look up:** `src/lookup_weather.py` reads the prepared table. It passes the user's chosen time to a parameterised SQL query and displays the matching forecast.
 
-6. Handle unavailable forecasts
-   If no matching row exists in the saved data, the script displays a message instead of an empty table.
+If validation fails, preparation stops. The lookup also handles invalid date entries, times outside exact hours, unavailable forecasts and a missing prepared file.
 
-The current script identifies hours matching these example weather preferences. Availability and walking duration will be added next. Wind is outside the first version's scope.
+Preparation and lookup are separate so multiple lookups can reuse the prepared table. Running preparation again replaces the output rather than appending rows.
 
-- Before looking up a forecast, the script calls a reusable validation function. If a data check fails, execution stops before the SQL transformation.
+The generated `data/processed/` folder is excluded from Git because it can be recreated from the original sample.
 
-- The preparation script validates the original JSON, converts the hourly lists into rows, converts forecast times into timestamps, and saves a Parquet table.
+### Scope decision
 
-- The lookup script reads that prepared table and returns the forecast for the user's chosen date and hour.
-## Scope decision
+I initially explored recommending walking times based on weather preferences and availability. I simplified the first version to answer:
 
+“What weather should I expect at my chosen walking time?”
 
-I simplified the first version to answer one question: “What weather should I expect at my chosen walking time?”
-
-Earlier experiments filtered weather conditions and availability to suggest walking times. The current version focuses on checking a time the user has already chosen.
+This keeps the first version focused on preparing reliable data and retrieving the chosen forecast.
 
 ## How to run it
 
-Run these commands from the project folder.
+These instructions are for macOS/Linux. Python 3.13.7 was used during development.
+
+Run commands from the project folder.
 
 Create and activate a virtual environment:
 
@@ -66,10 +69,17 @@ Install the required packages:
 python -m pip install -r requirements.txt
 ```
 
-Prepare the included sample, then start the forecast lookup:
+Prepare the included sample:
 
 ```bash
 python src/prepare_weather.py
+```
+
+Expected output: four PASS messages and 24 saved rows.
+
+Start the lookup:
+
+```bash
 python src/lookup_weather.py
 ```
 
@@ -81,40 +91,58 @@ When prompted, enter:
 
 Expected result: 11.8°C and 24% precipitation probability.
 
-This example uses a saved London forecast covering 20 October 2026.
-It can run without an API call once the packages are installed.
-The saved forecast is demonstration data, not current weather.
-
-The preparation script recreates the processed Parquet file.
-Running it again replaces that file rather than adding more rows.
+Once dependencies are installed, this example runs without an API call. The included forecast is demonstration data, not current weather.
 
 ### Fetching new data
 
-`python src/fetch_weather.py` requests a new forecast and overwrites
-`data/raw/london_sample.json`. This changes the available forecast dates.
-Run preparation again afterwards, and choose a time present in the new data.
+```bash
+python src/fetch_weather.py
+```
 
-## Where AI helped
+This requests a new forecast and overwrites `data/raw/london_sample.json`. The available forecast dates will change, so the October example may no longer return a result.
 
-Scope: defining the user, inputs, outputs and first-version boundaries.
-Setup: providing Git commands, virtual-environment instructions and .gitignore entries.
-Code: providing the Python examples for requesting, saving and inspecting weather data.
-Understanding and debugging: explaining the code, reviewing screenshots and correcting misunderstanding
-
-AI also provided example SQL and Python code for the forecast lookup and missing-result handling. I ran manual checks using a time present in the sample and a date outside it.
+Run preparation again afterwards and choose a time present in the new data.
 
 ## Checks performed
 
-I manually checked these situations:
+The scripts automatically check data and user inputs when run. I manually exercised the following scenarios:
 
-- A time available in the sample returns its forecast.
-- A date outside the sample displays a “No forecast found” message.
-- An entry such as `hello` displays guidance on the expected date format.
-- A time such as `20:30:00` asks the user to choose an exact hour.
-- Added checks for matching list lengths, missing values, rain probabilities between 0 and 100, and repeated forecast times.
-- Manually tested the rain probability check by temporarily setting one value to 150 in memory. The script rejected it.
-- Removed the temporary change and confirmed all four checks passed on the saved sample.
-These are manual checks; automated tests are not implemented yet.
-- Temporarily renamed the prepared Parquet file and confirmed the lookup displayed instructions to run preparation. Restored the file afterwards.
-- Ran preparation again and confirmed the output still contained 24 rows.
+- An available forecast time returns the expected values.
+- A date outside the sample produces a “No forecast found” message.
+- An entry such as `hello` produces date-format guidance.
+- A time such as `20:30:00` asks for an exact hour.
+- All four data-quality checks pass on the included sample.
+- Temporarily setting a rain probability to 150 in memory triggers rejection. Removing the temporary change restores the passing result.
+- Temporarily renaming the Parquet file produces preparation instructions. The file was restored afterwards.
+- Repeating preparation still produces 24 rows, and the lookup returns the same example forecast.
 
+A separate automated test suite is not implemented yet.
+
+## Limitations
+
+- London is fixed; users cannot select another location.
+- The included sample covers one day and is not current weather.
+- Only exact hours are supported.
+- Forecast timestamps are stored without timezone information; broader date and timezone support needs further work.
+- Data checks do not verify forecast accuracy.
+- Fetching new data overwrites the original sample.
+- There is no web interface, cloud deployment, route planning or step tracking.
+
+## What I would do next
+
+- Preserve the demonstration sample and save new forecasts separately, with retrieval timestamps.
+- Add automated tests for valid and invalid data.
+- Check required fields, numeric types and empty datasets.
+- Add location selection and clearer timezone handling.
+- Build a small web interface using the same prepared dataset.
+- Explore weather-based walking recommendations after completing the forecast lookup.
+
+## Where AI helped
+
+AI helped define the scope, explain Python and SQL, suggest Git and environment commands, and troubleshoot errors from terminal output and screenshots.
+
+AI supplied example code for API requests, saving JSON, validation, SQL transformation, Parquet output and forecast lookup.
+
+I used these examples, ran the scripts locally and manually checked the scenarios documented above. I chose to simplify the scope and exclude wind, routes and step tracking from the first version.
+
+AI assistance was substantial. Understanding and explaining the implementation independently remains part of my preparation.
