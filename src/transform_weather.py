@@ -1,6 +1,9 @@
 from datetime import datetime  # Help Python understand dates and times
+from inspect_weather import validate_weather  # Bring in our checking function
 import duckdb
 
+# Check the saved weather before using it for the forecast lookup
+validate_weather("data/raw/london_sample.json")
 chosen_time = input("Enter a date and hour (YYYY-MM-DD HH:00:00): ")
 
 try:  # Try to read the entered date and time

@@ -36,6 +36,8 @@ Features that could be added later ; recommednds best routes to take based on th
    If no matching row exists in the saved data, the script displays a message instead of an empty table.
 
 The current script identifies hours matching these example weather preferences. Availability and walking duration will be added next. Wind is outside the first version's scope.
+
+- Before looking up a forecast, the script calls a reusable validation function. If a data check fails, execution stops before the SQL transformation.
 ## Scope decision
 
 
