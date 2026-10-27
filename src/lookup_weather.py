@@ -1,8 +1,13 @@
 from datetime import datetime  # Help Python understand dates and times
-
+from pathlib import Path  # Help Python check whether a file exists
 import duckdb
 
+# Check that the prepared weather file is available
+prepared_file = Path("data/processed/hourly_weather.parquet")
 
+if not prepared_file.is_file():
+    print("Prepared weather data is missing. Run: python src/prepare_weather.py")
+    raise SystemExit(1)  # Stop and explain what to do next
 
 chosen_time = input("Enter a date and hour (YYYY-MM-DD HH:00:00): ")
 

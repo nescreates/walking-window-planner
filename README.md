@@ -50,12 +50,49 @@ I simplified the first version to answer one question: “What weather should I 
 Earlier experiments filtered weather conditions and availability to suggest walking times. The current version focuses on checking a time the user has already chosen.
 
 ## How to run it
+
+Run these commands from the project folder.
+
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the required packages:
+
+```bash
 python -m pip install -r requirements.txt
-python src/fetch_weather.py
-python src/inspect_weather.py
+```
+
+Prepare the included sample, then start the forecast lookup:
+
+```bash
 python src/prepare_weather.py
 python src/lookup_weather.py
+```
 
+When prompted, enter:
+
+```text
+2026-10-20 20:00:00
+```
+
+Expected result: 11.8°C and 24% precipitation probability.
+
+This example uses a saved London forecast covering 20 October 2026.
+It can run without an API call once the packages are installed.
+The saved forecast is demonstration data, not current weather.
+
+The preparation script recreates the processed Parquet file.
+Running it again replaces that file rather than adding more rows.
+
+### Fetching new data
+
+`python src/fetch_weather.py` requests a new forecast and overwrites
+`data/raw/london_sample.json`. This changes the available forecast dates.
+Run preparation again afterwards, and choose a time present in the new data.
 
 ## Where AI helped
 
@@ -78,4 +115,6 @@ I manually checked these situations:
 - Manually tested the rain probability check by temporarily setting one value to 150 in memory. The script rejected it.
 - Removed the temporary change and confirmed all four checks passed on the saved sample.
 These are manual checks; automated tests are not implemented yet.
+- Temporarily renamed the prepared Parquet file and confirmed the lookup displayed instructions to run preparation. Restored the file afterwards.
+- Ran preparation again and confirmed the output still contained 24 rows.
 
