@@ -1,3 +1,4 @@
+from datetime import datetime, timezone  # Help us record when we downloaded the forecast
 from pathlib import Path  # Help Python work with folders and files
 import requests
 
@@ -29,11 +30,20 @@ print(data["hourly"]["time"][:3])  # Show the first three times
 
 print(data["hourly"]["temperature_2m"][:3])   # Show the temperatures for those three times 
 
-raw_folder = Path("data/raw")  # Choose where to keep the original weather response
-raw_folder.mkdir(parents=True, exist_ok=True)  # Create the folder if it is missing
+# Keep new downloads separate from our demonstration sample
+raw_folder = Path("data/raw/live")
+raw_folder.mkdir(parents=True, exist_ok=True)  # Create the folder if needed
 
-raw_file = raw_folder / "london_sample.json"  # Choose the file name
+# Record the retrieval time in UTC, including fractions of a second
+retrieved_at = datetime.now(timezone.utc)
+timestamp = retrieved_at.strftime("%Y%m%dT%H%M%S%fZ")
 
-raw_file.write_bytes(response.content)  # Save the response without changing its contents
+# Give each download its own filename
+raw_file = raw_folder / f"london_forecast_{timestamp}.json"
 
-print(f"Saved weather data to {raw_file}")  # Show where the file was saved
+# Create a new file and save the original response unchanged
+with raw_file.open("xb") as file:
+    file.write(response.content)
+
+print(f"Saved weather data to {raw_file}")
+print(f"Retrieved at: {retrieved_at.isoformat()}")

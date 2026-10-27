@@ -98,10 +98,11 @@ Once dependencies are installed, this example runs without an API call. The incl
 ```bash
 python src/fetch_weather.py
 ```
+New forecasts are saved separately in `data/raw/live/`, with the UTC retrieval time in each filename. The original demonstration sample remains unchanged.
 
-This requests a new forecast and overwrites `data/raw/london_sample.json`. The available forecast dates will change, so the October example may no longer return a result.
+The retrieval time records when the response was downloaded, not when the provider generated the forecast.
 
-Run preparation again afterwards and choose a time present in the new data.
+Currently, preparation and lookup still use the demonstration sample. Support for processing the new snapshots is being developed.
 
 ## Checks performed
 
