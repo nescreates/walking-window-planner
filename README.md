@@ -154,6 +154,10 @@ The scripts automatically check data and user inputs when run. I manually exerci
 - Confirmed both lookup options returned forecasts from their respective datasets.
 - Confirmed the downloaded-forecast lookup displays the selected record's
   retrieval time and original source filename alongside the weather result.
+- Updated the separate review copy from GitHub, installed the recorded
+  dependencies, rebuilt the prepared data and checked both datasets
+  in the browser app. The selected example forecasts matched the
+  terminal lookup results. This check was performed on the same Mac.
 
 ### Automated tests
 
@@ -179,7 +183,8 @@ Other validation rules and forecast selection are not yet covered by automated t
 
 ## What I would do next
 
-- Add automated tests for valid and invalid data.
+- Expand automated tests to cover missing values, mismatched list lengths,
+  repeated forecast times and selection of the newest downloaded forecast.
 - Check required fields, numeric types and empty datasets.
 - Add location selection and clearer timezone handling.
 - Explore weather-based walking recommendations after completing the forecast lookup.
