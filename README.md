@@ -98,11 +98,16 @@ Once dependencies are installed, this example runs without an API call. The incl
 ```bash
 python src/fetch_weather.py
 ```
-New forecasts are saved separately in `data/raw/live/`, with the UTC retrieval time in each filename. The original demonstration sample remains unchanged.
+Preparation also processes the timestamped downloads in `data/raw/live/`.
+For each location and forecast hour, SQL selects the most recently
+downloaded record and saves it to `data/processed/latest_weather.parquet`.
+The original JSON downloads remain unchanged.
 
-The retrieval time records when the response was downloaded, not when the provider generated the forecast.
+When running the lookup, choose:
+- `1` for the original demonstration sample.
+- `2` for the prepared downloaded forecasts.
 
-Currently, preparation and lookup still use the demonstration sample. Support for processing the new snapshots is being developed.
+Option 2 uses saved downloads; it does not request fresh weather automatically.
 
 ## Checks performed
 
@@ -117,6 +122,11 @@ The scripts automatically check data and user inputs when run. I manually exerci
 - Temporarily renaming the Parquet file produces preparation instructions. The file was restored afterwards.
 - Repeating preparation still produces 24 rows, and the lookup returns the same example forecast.
 - Cloned the GitHub repository into a separate folder, created a new virtual environment, installed the requirements and successfully ran preparation and the example lookup without fetching new weather data. This was tested on the same Mac.
+- Processed two downloads covering the same 24 forecast hours: 48 input
+  rows became 24 selected rows.
+- Checked the selected rows' source filename and retrieval time:
+  all 24 came from the newer download.
+- Confirmed both lookup options returned forecasts from their respective datasets.
 
 A separate automated test suite is not implemented yet.
 

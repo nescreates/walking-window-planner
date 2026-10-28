@@ -2,8 +2,16 @@ from datetime import datetime  # Help Python understand dates and times
 from pathlib import Path  # Help Python check whether a file exists
 import duckdb
 
-# Check that the prepared weather file is available
-prepared_file = Path("data/processed/hourly_weather.parquet")
+# Ask which weather data the user wants to check
+choice = input("Choose weather data: 1 = demonstration sample, 2 = downloaded forecasts: ")
+
+if choice == "1":
+    prepared_file = Path("data/processed/hourly_weather.parquet")
+elif choice == "2":
+    prepared_file = Path("data/processed/latest_weather.parquet")
+else:
+    print("Please choose 1 or 2.")
+    raise SystemExit(1)  # Stop because we need a valid choice
 
 if not prepared_file.is_file():
     print("Prepared weather data is missing. Run: python src/prepare_weather.py")
@@ -29,11 +37,12 @@ SELECT
     forecast_time,
     temperature_c,
     rain_probability_pct
-FROM read_parquet('data/processed/hourly_weather.parquet')
+FROM read_parquet(?)
 WHERE forecast_time = CAST(? AS TIMESTAMP)
 ORDER BY forecast_time;
 """
-result = connection.sql(query, params=[chosen_time])  # Look up the chosen time
+# Give SQL the chosen file first, then the chosen walking time
+result = connection.sql(query, params=[str(prepared_file), chosen_time])
 rows = result.fetchall()  # Bring the matching rows into Python
 
 if not rows:  # If no matching rows were found
