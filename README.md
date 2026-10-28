@@ -84,8 +84,7 @@ Start the lookup:
 ```bash
 python src/lookup_weather.py
 ```
-
-When prompted, enter:
+When prompted, choose `1` for the demonstration sample, then enter:
 
 ```text
 2026-10-20 20:00:00
