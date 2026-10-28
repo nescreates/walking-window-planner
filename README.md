@@ -131,7 +131,18 @@ The scripts automatically check data and user inputs when run. I manually exerci
 - Confirmed the downloaded-forecast lookup displays the selected record's
   retrieval time and original source filename alongside the weather result.
 
-A separate automated test suite is not implemented yet.
+### Automated tests
+
+Run from the project folder:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Two automated tests check that valid weather data passes validation
+and a rain probability of 150% raises a ValueError.
+They use temporary files and leave the original weather data unchanged.
+Other validation rules and forecast selection are not yet covered by automated tests.
 
 ## Limitations
 
