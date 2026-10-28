@@ -58,6 +58,8 @@ Run commands from the project folder.
 
 Create and activate a virtual environment:
 
+When prompted, choose `1` for the demonstration sample, then enter:
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -74,8 +76,8 @@ Prepare the included sample:
 ```bash
 python src/prepare_weather.py
 ```
-
-Expected output: four PASS messages and 24 saved rows.
+Expected output includes validation messages, 24 demonstration rows,
+and a summary of the downloaded forecasts processed.
 
 Start the lookup:
 
@@ -139,12 +141,10 @@ A separate automated test suite is not implemented yet.
 - Only exact hours are supported.
 - Forecast timestamps are stored without timezone information; broader date and timezone support needs further work.
 - Data checks do not verify forecast accuracy.
-- Fetching new data overwrites the original sample.
 - There is no web interface, cloud deployment, route planning or step tracking.
 
 ## What I would do next
 
-- Preserve the demonstration sample and save new forecasts separately, with retrieval timestamps.
 - Add automated tests for valid and invalid data.
 - Check required fields, numeric types and empty datasets.
 - Add location selection and clearer timezone handling.
