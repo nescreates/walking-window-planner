@@ -67,7 +67,7 @@ Run commands from the project folder.
 
 Create and activate a virtual environment:
 
-When prompted, choose `1` for the demonstration sample, then enter:
+
 
 ```bash
 python3 -m venv .venv
@@ -102,6 +102,21 @@ When prompted, choose `1` for the demonstration sample, then enter:
 Expected result: 11.8°C and 24% precipitation probability.
 
 Once dependencies are installed, this example runs without an API call. The included forecast is demonstration data, not current weather.
+
+### Browser app
+
+After preparing the data, start the app:
+
+```bash
+python -m streamlit run app.py
+```
+
+Choose “Demonstration sample” for 20 October 2026 or
+“Downloaded forecasts” for the saved downloads. Select an available
+date and hour to display temperature and rain probability.
+
+Downloaded forecasts also display their retrieval time and source filename.
+The app reads prepared Parquet files; it does not fetch fresh weather automatically.
 
 ### Fetching new data
 
@@ -160,15 +175,17 @@ Other validation rules and forecast selection are not yet covered by automated t
 - Only exact hours are supported.
 - Forecast timestamps are stored without timezone information; broader date and timezone support needs further work.
 - Data checks do not verify forecast accuracy.
-- There is no web interface, cloud deployment, route planning or step tracking.
+-
 
 ## What I would do next
 
 - Add automated tests for valid and invalid data.
 - Check required fields, numeric types and empty datasets.
 - Add location selection and clearer timezone handling.
-- Build a small web interface using the same prepared dataset.
 - Explore weather-based walking recommendations after completing the forecast lookup.
+- Add automatic forecast refresh and extend the forecast range so users
+  can check upcoming walking times. Display when data was downloaded
+  and clearly flag forecasts that are out of date.
 
 ## Where AI helped
 
@@ -179,3 +196,5 @@ AI supplied example code for API requests, saving JSON, validation, SQL transfor
 I used these examples, ran the scripts locally and manually checked the scenarios documented above. I chose to simplify the scope and exclude wind, routes and step tracking from the first version.
 
 AI assistance was substantial. Understanding and explaining the implementation independently remains part of my preparation.
+
+AI also supplied the Streamlit interface code and helped diagnose the missing pytz dependency.
