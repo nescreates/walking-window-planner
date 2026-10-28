@@ -50,5 +50,13 @@ if not rows:  # If no matching rows were found
 else:  # Otherwise, show the forecast
     result.show()
 
+    if choice == "2":
+        # Show when we downloaded this forecast and which file it came from
+        connection.sql("""
+            SELECT retrieved_at, source_file
+            FROM read_parquet(?)
+            WHERE forecast_time = CAST(? AS TIMESTAMP)
+        """, params=[str(prepared_file), chosen_time]).show()
+
 connection.close() # close the connection to the database when finished 
  

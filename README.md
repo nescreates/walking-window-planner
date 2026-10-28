@@ -127,6 +127,8 @@ The scripts automatically check data and user inputs when run. I manually exerci
 - Checked the selected rows' source filename and retrieval time:
   all 24 came from the newer download.
 - Confirmed both lookup options returned forecasts from their respective datasets.
+- Confirmed the downloaded-forecast lookup displays the selected record's
+  retrieval time and original source filename alongside the weather result.
 
 A separate automated test suite is not implemented yet.
 
