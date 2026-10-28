@@ -8,6 +8,15 @@ The user enters a date and exact hour to see the forecast temperature and precip
 
 The current version demonstrates a Python and SQL pipeline using a saved London forecast for 20 October 2026. It is not a live weather app.
 
+
+## About me
+
+I’m Nesaa, a Biomedical Science graduate with experience working in NHS mental health services, now developing my skills in Python, SQL and data engineering.
+
+What I have enjoyed most about this project is breaking a problem into smaller steps and turning raw data into something readable and useful for an end user. Working with the API response helped me understand why data needs to be checked and transformed before it can support a straightforward forecast lookup.
+
+After attending The Information Lab’s event, I refined my project to focus more on transformation and explaining my decisions. I’m interested in the programme because I want to build stronger technical foundations and learn how to apply them to practical client problems.
+
 ## The data
 
 Source: [Open-Meteo Forecast API](https://open-meteo.com/en/docs).
